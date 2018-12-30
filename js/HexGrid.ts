@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js'
 import { debounce } from 'lodash';
-import Hexagon, {FadeOptions} from './Hexagon';
+import Hexagon from './Hexagon';
 import Vector from './Vector';
 import {flatten} from 'lodash';
 import HoneyComb, { HoneyCombParts } from './HoneyComb';
@@ -53,6 +53,14 @@ class HexGrid {
     this.hexagons = hexagons;
   }
 
+  /**
+   * Return an instance of Hexagon, allowing control of the hexagon at 
+   * a particular grid location
+   *
+   * @param {Vector} {x, y}
+   * @returns {(Hexagon | false)}
+   * @memberof HexGrid
+   */
   getHexagon({x, y}: Vector) : Hexagon | false {
     try {
       return this.hexagons[x][y] ? this.hexagons[x][y] : false;
@@ -61,10 +69,26 @@ class HexGrid {
     }
   }
 
+  /**
+   * Returns an instance of HexGroup that contains
+   * all hexagons within the grid.
+   *
+   * @returns {HexGroup}
+   * @memberof HexGrid
+   */
   getAll(): HexGroup {
     return new HexGroup(flatten(this.hexagons));
   }
 
+  /**
+   * Returns an instance of HexGroup that contains
+   * all gexagons in a line diagnoally down and to the 
+   * right from the vector passed in
+   *
+   * @param {Vector} {x,y}
+   * @returns {HexGroup}
+   * @memberof HexGrid
+   */
   getLine({x,y}: Vector) :HexGroup {
     /**
      * To generate a line, coords should follow this format:
@@ -101,7 +125,16 @@ class HexGrid {
     return new HexGroup(hexArr);
   }
 
-  getEvenYHoneyComb({x, y}: Vector): HoneyCombParts {
+  /**
+   * Utility function to generate the coordonates for a honeycomb
+   * when the starting vector is on an EVEN numbered Y coordinate
+   *
+   * @private
+   * @param {Vector} {x, y}
+   * @returns {HoneyCombParts}
+   * @memberof HexGrid
+   */
+  private getEvenYHoneyComb({x, y}: Vector): HoneyCombParts {
     return {
     center: this.getHexagon({x, y}),
     left: this.getHexagon({x: x - 1, y}),
@@ -112,7 +145,16 @@ class HexGrid {
     topRight: this.getHexagon({x: x + 1, y: y + 1}),
   }}
 
-  getOddYHoneyComb({x, y}: Vector): HoneyCombParts {
+  /**
+   * Utility function to generate the coordonates for a honeycomb
+   * when the starting vector is on an Odd numbered Y coordinate
+   *
+   * @private
+   * @param {Vector} {x, y}
+   * @returns {HoneyCombParts}
+   * @memberof HexGrid
+   */
+  private getOddYHoneyComb({x, y}: Vector): HoneyCombParts {
     return {
     center: this.getHexagon({x, y}),
     left: this.getHexagon({x: x - 1, y}),
@@ -123,45 +165,38 @@ class HexGrid {
     topRight: this.getHexagon({x, y: y - 1}),
   }}
 
+  /**
+   * Returns an instance of HoneyComb, which
+   * is a group of hexagons arranges in a honeycomb
+   * shape
+   *
+   * @param {Vector} {x,y}
+   * @returns {HoneyComb}
+   * @memberof HexGrid
+   */
   getHoneyComb({x,y}: Vector): HoneyComb {
     const honeyComb: HoneyComb = new HoneyComb(y % 2 === 0 ? this.getEvenYHoneyComb({x,y}) : this.getOddYHoneyComb({x,y}));
     return honeyComb;
   }
 
-  fadeInAt(vector: Vector, ops: FadeOptions = {speed: 1, delay: 0}) {
-    const hexagon = this.getHexagon(vector);
-    if (hexagon) {
-      hexagon.fadeIn(ops);
-    }
-    return this;
-  }
-
-  fadeOutAt(vector: Vector, ops: FadeOptions = {speed: 1, delay: 0}) {
-    const hexagon = this.getHexagon(vector);
-    if (hexagon) {
-      hexagon.fadeOut(ops);
-    }
-    return this;
-  }
-
-  fadeInHoneyCombAt(vector: Vector, ops: FadeOptions = { speed: 1, delay: 0 }) : Promise<Hexagon[]> {
-    const honeyComb: HoneyComb = this.getHoneyComb(vector);
-    const hexagons: Hexagon[] = Object.values(honeyComb);
-    const fadePromises: Promise<Hexagon>[] = hexagons.filter(hex => hex).map(hex => hex.fadeIn(ops));
-    return Promise.all(fadePromises);
-  }
-
-  fadeOutHoneyCombAt(vector: Vector, ops: FadeOptions = { speed: 1, delay: 0 }) : Promise<Hexagon[]> {
-    const honeyComb: HoneyComb = this.getHoneyComb(vector);
-    const hexagons: Hexagon[] = Object.values(honeyComb);
-    const fadePromises: Promise<Hexagon>[] = hexagons.filter(hex => hex).map(hex => hex.fadeOut(ops));
-    return Promise.all(fadePromises);
-  }
-
+  /**
+   * Kill any animations, queued or in progress
+   * anywhere on the grid
+   *
+   * @memberof HexGrid
+   */
   killAllAnimations() {
     this.getAll().forEach(hexagon => hexagon.killAllAnimations());
   }
 
+  /**
+   * Destroy the current instance of hexgrid:
+   * kills all animations, empties the html, 
+   * destorys the event listener,
+   * and kills the PIXI app.
+   *
+   * @memberof HexGrid
+   */
   kill() {
     this.killAllAnimations();
     this.app.destroy();

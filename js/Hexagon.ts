@@ -17,6 +17,14 @@ class Hexagon {
   timeout: number | false;
   animations: Set<TweenLite>;
 
+  /**
+   * Creates an instance of Hexagon. Allows for control
+   * of a single hexagon on a HexGrid
+   * @param {number} size
+   * @param {Vector} coords
+   * @param {PIXI.Application} pixiApp
+   * @memberof Hexagon
+   */
   constructor(size: number, coords: Vector, pixiApp: PIXI.Application) {
     const doubleSize = size * 2;
     this.points = [
@@ -46,6 +54,14 @@ class Hexagon {
   this.animations = new Set();
   }
 
+  /**
+   * Animate the fade in of a hexagon from its current
+   * state to 100% opacity
+   *
+   * @param {FadeOptions} opts
+   * @returns {Promise<Hexagon>}
+   * @memberof Hexagon
+   */
   fadeIn(opts: FadeOptions): Promise<Hexagon> {
     return new Promise<Hexagon>((resolve) => {
       const tweenliteInstance = TweenLite.to(this.graphic, opts.speed, {alpha: 1, delay: opts.delay, onComplete: () => {
@@ -56,6 +72,14 @@ class Hexagon {
     })
   }
 
+  /**
+   * Animate the fade in of a hexagon from its current
+   * state to 0% opacity
+   *
+   * @param {FadeOptions} opts
+   * @returns {Promise<Hexagon>}
+   * @memberof Hexagon
+   */
   fadeOut(opts: FadeOptions): Promise<Hexagon> {
     return new Promise<Hexagon>((resolve) => {
       const tweenliteInstance = TweenLite.to(this.graphic, opts.speed, {alpha: 0, delay: opts.delay, onComplete: () => {
@@ -66,6 +90,13 @@ class Hexagon {
     })
   }
 
+  /**
+   * Animate a fade in, followed by a fade out
+   *
+   * @param {FadeOptions} opts
+   * @returns
+   * @memberof Hexagon
+   */
   async flicker(opts: FadeOptions) {
     const speed: number = opts.speed;
     await this.fadeIn({speed, delay: 0});
@@ -73,14 +104,33 @@ class Hexagon {
     return this;
   }
 
+  /**
+   * Returns an array of all TweenLite 
+   * instances currently active on the hexagon
+   *
+   * @returns {TweenLite[]}
+   * @memberof Hexagon
+   */
   getAllAnimations(): TweenLite[] {
     return Array.from(this.animations);
   }
 
+  /**
+   * Kill all animations currently active
+   * on the hexagon
+   *
+   * @memberof Hexagon
+   */
   killAllAnimations(): void {
     this.animations.forEach(tweenInstance => tweenInstance.kill());
   }
 
+  /**
+   *Renders the hexagon on the pixi application
+   *
+   * @private
+   * @memberof Hexagon
+   */
   render() {
     this.app.stage.addChild(this.graphic);
   }
