@@ -1,5 +1,14 @@
 {
+  "include": [
+    "./js/**/*.ts"
+  ],
   "compilerOptions": {
-    "target": "es2017"
+    "target": "es2017",
+    "declaration": true,
+    "outDir": "./dist",
+    "outFile": "./dist/HexGrid.js",
+    "module": "AMD",
+    "removeComments": true,
+    "sourceMap": true
   }
 }

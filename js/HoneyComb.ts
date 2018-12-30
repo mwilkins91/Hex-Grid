@@ -1,17 +1,17 @@
-import Hexagon, { FadeOptions } from "./Hexagon";
+import Hexagon, { FadeOptions } from './Hexagon';
 
 export interface HoneyCombParts {
-  center: Hexagon | false,
-  left: Hexagon | false,
-  topLeft: Hexagon | false,
-  topRight: Hexagon | false,
-  right: Hexagon | false,
-  bottomRight: Hexagon | false,
-  bottomLeft: Hexagon | false,
+  center: Hexagon | false;
+  left: Hexagon | false;
+  topLeft: Hexagon | false;
+  topRight: Hexagon | false;
+  right: Hexagon | false;
+  bottomRight: Hexagon | false;
+  bottomLeft: Hexagon | false;
 }
 
 class HoneyComb {
-  hexagons: HoneyCombParts;
+  public hexagons: HoneyCombParts;
   /**
    * Creates an instance of HoneyComb. A hexagon group
    * in the shape of a honeycomb
@@ -21,12 +21,12 @@ class HoneyComb {
   constructor(parts: HoneyCombParts) {
     this.hexagons = Object.assign({}, parts);
     if (this.hexagonArray.every(hex => !hex)) {
-      console.warn('The selected honeycomb is off the visible grid')
+      console.warn('The selected honeycomb is off the visible grid');
     }
   }
-  
+
   /**
-   *Returns the Honeycomb instance as an Array
+   * Returns the Honeycomb instance as an Array
    *
    * @readonly
    * @type {Hexagon[]}
@@ -42,8 +42,8 @@ class HoneyComb {
    * @param {FadeOptions} opts
    * @memberof HoneyComb
    */
-  fadeIn(opts: FadeOptions) {
-    this.hexagonArray.forEach((hexagon: Hexagon) => hexagon.fadeIn(opts))
+  public fadeIn(opts: FadeOptions) {
+    this.hexagonArray.forEach((hexagon: Hexagon) => hexagon.fadeIn(opts));
   }
 
   /**
@@ -52,8 +52,8 @@ class HoneyComb {
    * @param {FadeOptions} opts
    * @memberof HoneyComb
    */
-  fadeOut(opts: FadeOptions) {
-    this.hexagonArray.forEach((hexagon: Hexagon) => hexagon.fadeOut(opts))
+  public fadeOut(opts: FadeOptions) {
+    this.hexagonArray.forEach((hexagon: Hexagon) => hexagon.fadeOut(opts));
   }
 
   /**
@@ -62,8 +62,8 @@ class HoneyComb {
    * @param {FadeOptions} opts
    * @memberof HoneyComb
    */
-  flicker(opts: FadeOptions) {
-    this.hexagonArray.forEach((hexagon: Hexagon) => hexagon.flicker(opts))
+  public flicker(opts: FadeOptions) {
+    this.hexagonArray.forEach((hexagon: Hexagon) => hexagon.flicker(opts));
   }
 
   /**
@@ -73,7 +73,7 @@ class HoneyComb {
    * @param {Function} callback
    * @memberof HoneyComb
    */
-  forEach(callback: Function) {
+  public forEach(callback: (a: Hexagon, b: number, c: Hexagon[]) => void) {
     for (let i: number = 0; i < this.hexagonArray.length; i++) {
       const hexagon: Hexagon = this.hexagonArray[i];
       callback(hexagon, i, this.hexagonArray);

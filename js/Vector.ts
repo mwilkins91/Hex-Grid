@@ -4,8 +4,8 @@
  * @interface Vector
  */
 interface Vector {
-  x: number,
-  y: number
+  x: number;
+  y: number;
 }
 
 export default Vector;

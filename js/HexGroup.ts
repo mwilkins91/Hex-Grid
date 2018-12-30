@@ -1,5 +1,4 @@
-import Hexagon, { FadeOptions } from "./Hexagon";
-
+import Hexagon, { FadeOptions } from './Hexagon';
 
 class HexGroup {
   private hexagons: Hexagon[];
@@ -13,10 +12,10 @@ class HexGroup {
   constructor(parts: Hexagon[]) {
     this.hexagons = parts;
     if (this.hexagonArray.every(hex => !hex)) {
-      console.warn('Part of this hexagon group is off the visible grid')
+      console.warn('Part of this hexagon group is off the visible grid');
     }
   }
-  
+
   /**
    * Return the hexGroup instance as an Array
    *
@@ -34,8 +33,8 @@ class HexGroup {
    * @param {FadeOptions} opts
    * @memberof HexGroup
    */
-  fadeIn(opts: FadeOptions) {
-    this.hexagonArray.forEach((hexagon: Hexagon) => hexagon.fadeIn(opts))
+  public fadeIn(opts: FadeOptions) {
+    this.hexagonArray.forEach((hexagon: Hexagon) => hexagon.fadeIn(opts));
   }
 
   /**
@@ -44,8 +43,8 @@ class HexGroup {
    * @param {FadeOptions} opts
    * @memberof HexGroup
    */
-  fadeOut(opts: FadeOptions) {
-    this.hexagonArray.forEach((hexagon: Hexagon) => hexagon.fadeOut(opts))
+  public fadeOut(opts: FadeOptions) {
+    this.hexagonArray.forEach((hexagon: Hexagon) => hexagon.fadeOut(opts));
   }
 
   /**
@@ -54,7 +53,7 @@ class HexGroup {
    * @param {FadeOptions} opts
    * @memberof HexGroup
    */
-  async staggeredFadeIn(opts: FadeOptions) {
+  public async staggeredFadeIn(opts: FadeOptions) {
     for (let i = 0; i < this.hexagonArray.length; i++) {
       const hexagon = this.hexagonArray[i];
       await hexagon.fadeIn(opts);
@@ -67,13 +66,12 @@ class HexGroup {
    * @param {FadeOptions} opts
    * @memberof HexGroup
    */
-  async staggeredFadeOut(opts: FadeOptions) {
+  public async staggeredFadeOut(opts: FadeOptions) {
     for (let i = 0; i < this.hexagonArray.length; i++) {
       const hexagon = this.hexagonArray[i];
       await hexagon.fadeOut(opts);
     }
   }
-
 
   /**
    * Flicker the hexagons within the hexgroup
@@ -81,8 +79,8 @@ class HexGroup {
    * @param {FadeOptions} opts
    * @memberof HexGroup
    */
-  flicker(opts: FadeOptions) {
-    this.hexagonArray.forEach((hexagon: Hexagon) => hexagon.flicker(opts))
+  public flicker(opts: FadeOptions) {
+    this.hexagonArray.forEach((hexagon: Hexagon) => hexagon.flicker(opts));
   }
 
   /**
@@ -91,7 +89,7 @@ class HexGroup {
    * @param {Function} callback
    * @memberof HexGroup
    */
-  forEach(callback: Function) {
+  public forEach(callback: (a: Hexagon, b: number, c: Hexagon[]) => void) {
     for (let i: number = 0; i < this.hexagonArray.length; i++) {
       const hexagon: Hexagon = this.hexagonArray[i];
       callback(hexagon, i, this.hexagonArray);

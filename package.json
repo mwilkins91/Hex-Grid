@@ -1,25 +1,41 @@
 {
-  "name": "hex-header",
-  "version": "1.0.0",
+  "name": "hex-grid",
+  "version": "0.0.1",
   "description": "A resoponsive canvas header with nifty hexagon animations",
-  "main": "index.ts",
   "scripts": {
     "start": "parcel index.html --no-hmr",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc --build",
+    "test": "jest --config jestconfig.json",
+    "format": "prettier --write \"js/**/*.ts\" \"js/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "lint-fix": "tslint -p tsconfig.json --fix",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
   },
+  "main": "./dist/HexGrid.js",
+  "types": "./dist/HexGrid.d.ts",
   "author": "Mark Wilkins",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.1.6",
     "@babel/plugin-transform-runtime": "^7.1.0",
-    "@types/gsap": "^1.20.0",
-    "@types/pixi.js": "^4.8.4",
+    "@types/jest": "^23.3.10",
+    "jest": "^23.6.0",
     "parcel": "^1.10.3",
-    "typescript": "^3.2.1"
+    "prettier": "^1.15.3",
+    "ts-jest": "^23.10.5",
+    "tslint": "^5.12.0",
+    "tslint-config-prettier": "^1.17.0",
+    "typescript": "^3.2.2"
   },
   "dependencies": {
     "@babel/runtime-corejs2": "^7.1.5",
     "@types/lodash": "^4.14.118",
+    "@types/gsap": "^1.20.0",
+    "@types/pixi.js": "^4.8.4",
     "gsap": "^2.0.2",
     "lodash": "^4.17.11",
     "pixi.js": "^4.8.2"
