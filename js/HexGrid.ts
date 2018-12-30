@@ -1,21 +1,39 @@
-import {Application} from 'pixi.js'
+import * as PIXI from 'pixi.js'
+import { debounce } from 'lodash';
 import Hexagon, {FadeOptions} from './Hexagon';
 import Vector from './Vector';
 import {flatten} from 'lodash';
-
-interface HoneyComb {
-  center: Hexagon | false,
-  left: Hexagon | false,
-  topLeft: Hexagon | false,
-  topRight: Hexagon | false,
-  right: Hexagon | false,
-  bottomRight: Hexagon | false,
-  bottomLeft: Hexagon | false,
-}
-
+import HoneyComb, { HoneyCombParts } from './HoneyComb';
+import HexGroup from './HexGroup';
 class HexGrid {
   hexagons: Array<Hexagon[]>;
-  constructor(size:number, app:Application, container: HTMLDivElement) {
+  handleResize: EventListener;
+  container: HTMLElement;
+  app: PIXI.Application;
+  /**
+   * Creates an instance of HexGrid. Provides methods for getting groups of hexagons
+   * as well as individual hexagons.
+   * @param {HTMLElement} container
+   * @param {number} [size=10]
+   * @memberof HexGrid
+   */
+  constructor(container: HTMLElement, size:number = 10) {
+
+    const app = new PIXI.Application({ width: 256, height: 256, antialias: true });
+    this.app = app;
+
+    container.appendChild(app.view);
+    this.container = container;
+
+    app.renderer.view.style.position = "absolute";
+    app.renderer.view.style.display = "block";
+    app.renderer.resize(container.offsetWidth, container.offsetHeight);
+    this.handleResize = debounce(function resize(e: Event) {
+      app.renderer.resize(container.offsetWidth, container.offsetHeight);
+    }, 1000);
+
+    window.addEventListener('resize', this.handleResize);
+
     const hexagons = [];
     const shapesPerRow: number = Math.ceil(app.renderer.view.width / (size * 4)) + 1;
     const shapesPerColumn: number = Math.ceil(app.renderer.view.height / (size * 3)) + 1;
@@ -43,20 +61,70 @@ class HexGrid {
     }
   }
 
-  getAll(): Hexagon[] {
-    return flatten(this.hexagons);
+  getAll(): HexGroup {
+    return new HexGroup(flatten(this.hexagons));
   }
 
-  getHoneyComb({x,y}: Vector): HoneyComb {
-    const honeyComb = {
-      center: this.getHexagon({x, y}),
-      left: this.getHexagon({x: x - 1, y}),
-      topLeft: this.getHexagon({x, y: y + 1}),
-      topRight: this.getHexagon({x: x + 1, y: y + 1}),
-      right: this.getHexagon({x: x + 1, y}),
-      bottomRight: this.getHexagon({x: x + 1, y: y - 1}),
-      bottomLeft: this.getHexagon({x, y: y - 1}),
+  getLine({x,y}: Vector) :HexGroup {
+    /**
+     * To generate a line, coords should follow this format:
+     *  x, y
+        0, 0
+        1, 1
+        1, 2
+        2, 3
+        2, 4
+        3, 5
+        3, 6
+     */
+    const hexArr: Hexagon[] = [];
+    let targetVector: Vector = {
+      x,
+      y
     }
+    let i = 1;
+    while (this.getHexagon(targetVector)) {
+      i++;
+      const hexagon = this.getHexagon(targetVector);
+      if(!hexagon) {
+        break;
+      }
+      hexArr.push(hexagon);
+      targetVector.y += 1;
+      if (y % 2 === 0) {
+        targetVector.x = x + Math.floor(i/2);
+      } else {
+        targetVector.x = x + Math.floor(i/2 - 0.5);
+      }
+    }
+
+    return new HexGroup(hexArr);
+  }
+
+  getEvenYHoneyComb({x, y}: Vector): HoneyCombParts {
+    return {
+    center: this.getHexagon({x, y}),
+    left: this.getHexagon({x: x - 1, y}),
+    bottomRight: this.getHexagon({x: x + 1, y: y - 1}),
+    bottomLeft: this.getHexagon({x, y: y - 1}),
+    right: this.getHexagon({x: x + 1, y}),
+    topLeft: this.getHexagon({x, y: y + 1}),
+    topRight: this.getHexagon({x: x + 1, y: y + 1}),
+  }}
+
+  getOddYHoneyComb({x, y}: Vector): HoneyCombParts {
+    return {
+    center: this.getHexagon({x, y}),
+    left: this.getHexagon({x: x - 1, y}),
+    bottomRight: this.getHexagon({x, y: y + 1}),
+    bottomLeft: this.getHexagon({x: x - 1, y: y + 1}),
+    right: this.getHexagon({x: x + 1, y}),
+    topLeft: this.getHexagon({x: x - 1, y: y - 1}),
+    topRight: this.getHexagon({x, y: y - 1}),
+  }}
+
+  getHoneyComb({x,y}: Vector): HoneyComb {
+    const honeyComb: HoneyComb = new HoneyComb(y % 2 === 0 ? this.getEvenYHoneyComb({x,y}) : this.getOddYHoneyComb({x,y}));
     return honeyComb;
   }
 
@@ -88,6 +156,17 @@ class HexGrid {
     const hexagons: Hexagon[] = Object.values(honeyComb);
     const fadePromises: Promise<Hexagon>[] = hexagons.filter(hex => hex).map(hex => hex.fadeOut(ops));
     return Promise.all(fadePromises);
+  }
+
+  killAllAnimations() {
+    this.getAll().forEach(hexagon => hexagon.killAllAnimations());
+  }
+
+  kill() {
+    this.killAllAnimations();
+    this.app.destroy();
+    this.container.innerHTML = '';
+    window.removeEventListener('resize', this.handleResize);
   }
 }
 

@@ -15,6 +15,7 @@ class Hexagon {
   on: Function;
   off: Function;
   timeout: number | false;
+  animations: Set<TweenLite>;
 
   constructor(size: number, coords: Vector, pixiApp: PIXI.Application) {
     const doubleSize = size * 2;
@@ -42,24 +43,42 @@ class Hexagon {
   this.on = this.graphic.on;
   this.off = this.graphic.off;
   this.timeout = false;
+  this.animations = new Set();
   }
 
   fadeIn(opts: FadeOptions): Promise<Hexagon> {
     return new Promise<Hexagon>((resolve) => {
-      TweenLite.to(this.graphic, opts.speed, {alpha: 1, delay: opts.delay, onComplete: () => resolve(this)})
+      const tweenliteInstance = TweenLite.to(this.graphic, opts.speed, {alpha: 1, delay: opts.delay, onComplete: () => {
+        this.animations.delete(tweenliteInstance);
+        return resolve(this);
+      }});
+      this.animations.add(tweenliteInstance);
     })
   }
 
   fadeOut(opts: FadeOptions): Promise<Hexagon> {
     return new Promise<Hexagon>((resolve) => {
-      TweenLite.to(this.graphic, opts.speed, {alpha: 0, delay: opts.delay, onComplete: () => resolve(this)})
+      const tweenliteInstance = TweenLite.to(this.graphic, opts.speed, {alpha: 0, delay: opts.delay, onComplete: () => {
+        this.animations.delete(tweenliteInstance);
+        return resolve(this);
+      }});
+      this.animations.add(tweenliteInstance);
     })
   }
 
-  async flicker(delay: number = 0.1, speed: number = 0.5) {
+  async flicker(opts: FadeOptions) {
+    const speed: number = opts.speed;
     await this.fadeIn({speed, delay: 0});
-    await this.fadeOut({speed, delay});
+    await this.fadeOut(opts);
     return this;
+  }
+
+  getAllAnimations(): TweenLite[] {
+    return Array.from(this.animations);
+  }
+
+  killAllAnimations(): void {
+    this.animations.forEach(tweenInstance => tweenInstance.kill());
   }
 
   render() {
