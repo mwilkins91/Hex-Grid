@@ -1,6 +1,6 @@
 {
   "name": "canvas-hex-grid",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A resoponsive canvas header with nifty hexagon animations",
   "scripts": {
     "start": "parcel index.html --no-hmr",
