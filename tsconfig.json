@@ -3,7 +3,7 @@
     "./js/**/*.ts"
   ],
   "exclude": [
-    "./js/__tests__/**/*.ts"
+    "./**/*.test.ts"
   ],
   "compilerOptions": {
     "target": "es2017",
