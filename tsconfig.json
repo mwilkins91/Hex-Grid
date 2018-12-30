@@ -2,6 +2,9 @@
   "include": [
     "./js/**/*.ts"
   ],
+  "exclude": [
+    "./js/__tests__/**/*.ts"
+  ],
   "compilerOptions": {
     "target": "es2017",
     "declaration": true,
