@@ -1,5 +1,6 @@
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const babelOptions = {
   "presets": [[
     "@babel/preset-env",
@@ -34,7 +35,9 @@ module.exports = {
     resolve: {
         extensions: [".tsx", ".ts", ".js"]
     },
-    plugins: [],
+    plugins: [
+      new BundleAnalyzerPlugin()
+    ],
     optimization: {
       minimize: true,
       minimizer: [

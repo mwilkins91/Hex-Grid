@@ -38,6 +38,7 @@
     "tslint-config-prettier": "^1.17.0",
     "typescript": "^3.2.2",
     "webpack": "^4.28.3",
+    "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.2.0"
   },
   "dependencies": {
