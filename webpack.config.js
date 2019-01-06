@@ -5,8 +5,8 @@ const babelOptions = {
 module.exports = {
     entry: path.join(__dirname, '/js/index.ts'),
     output: {
-        filename: 'HexGrid.js',
-        library: 'HexGrid',
+        filename: 'index.js',
+        library: 'HexCanvas',
         libraryTarget: 'umd',
         path: path.resolve(__dirname, './dist')
     },

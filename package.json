@@ -15,8 +15,8 @@
     "version": "npm run format && git add -A js",
     "postversion": "git push && git push --tags"
   },
-  "main": "./dist/HexGrid.js",
-  "types": "./dist/HexGrid.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "author": "Mark Wilkins",
   "license": "ISC",
   "files": [
