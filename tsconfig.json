@@ -9,9 +9,8 @@
     "target": "es2017",
     "declaration": true,
     "outDir": "./dist",
-    "outFile": "./dist/HexGrid.js",
-    "module": "AMD",
+    "module": "ES6",
     "removeComments": true,
-    "sourceMap": true
+    "sourceMap": true,
   }
 }

@@ -1,10 +1,10 @@
 {
   "name": "canvas-hex-grid",
-  "version": "0.0.8",
+  "version": "0.0.12",
   "description": "A resoponsive canvas header with nifty hexagon animations",
   "scripts": {
     "start": "parcel index.html --no-hmr",
-    "build": "tsc --build",
+    "build": "rm -rf ./dist && webpack -p",
     "test": "jest --config jestconfig.json",
     "format": "prettier --write \"js/**/*.ts\" \"js/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
@@ -15,8 +15,8 @@
     "version": "npm run format && git add -A js",
     "postversion": "git push && git push --tags"
   },
-  "main": "./dist/HexGrid.js",
-  "types": "./dist/HexGrid.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "author": "Mark Wilkins",
   "license": "ISC",
   "files": [
@@ -26,13 +26,17 @@
     "@babel/core": "^7.1.6",
     "@babel/plugin-transform-runtime": "^7.1.0",
     "@types/jest": "^23.3.10",
+    "babel-loader": "^8.0.5",
     "jest": "^23.6.0",
     "parcel": "^1.10.3",
     "prettier": "^1.15.3",
     "ts-jest": "^23.10.5",
+    "ts-loader": "^5.3.3",
     "tslint": "^5.12.0",
     "tslint-config-prettier": "^1.17.0",
-    "typescript": "^3.2.2"
+    "typescript": "^3.2.2",
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.2.0"
   },
   "dependencies": {
     "@babel/runtime-corejs2": "^7.1.5",
