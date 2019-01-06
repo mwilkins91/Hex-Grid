@@ -56,7 +56,7 @@ class Hexagon {
     this.graphic.alpha = 0;
     this.app = pixiApp;
     this.on = this.graphic.on.bind(this.graphic);
-    this.off = this.graphic.off.bind(this.graphic);;
+    this.off = this.graphic.off.bind(this.graphic);
     this.timeout = false;
     this.animations = new Set();
   }
