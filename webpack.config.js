@@ -4,6 +4,8 @@ module.exports = {
     entry: path.join(__dirname, '/js/HexGrid.ts'),
     output: {
         filename: 'HexGrid.js',
+        library: 'HexGrid',
+        libraryTarget: 'umd',
         path: path.resolve(__dirname, './dist')
     },
     module: {
