@@ -11,6 +11,6 @@
     "outDir": "./dist",
     "module": "ES6",
     "removeComments": true,
-    "sourceMap": true
+    "sourceMap": true,
   }
 }

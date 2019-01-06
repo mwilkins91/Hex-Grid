@@ -1,7 +1,9 @@
 const path = require('path');
-
+const babelOptions = {
+  "presets": []
+};
 module.exports = {
-    entry: path.join(__dirname, '/js/HexGrid.ts'),
+    entry: path.join(__dirname, '/js/index.ts'),
     output: {
         filename: 'HexGrid.js',
         library: 'HexGrid',
@@ -10,14 +12,23 @@ module.exports = {
     },
     module: {
         rules: [
-            {
-                test: /\.ts?$/,
-                loader: 'ts-loader',
-                exclude: /node_modules/,
-            },
+          {
+            test: /\.ts(x?)$/,
+            exclude: /node_modules/,
+            use: [
+              {
+                loader: 'babel-loader',
+                options: babelOptions
+              },
+              {
+                loader: 'ts-loader'
+              }
+            ]
+          },
         ]
     },
     resolve: {
         extensions: [".tsx", ".ts", ".js"]
     },
+    plugins: []
 };
